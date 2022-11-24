@@ -30,21 +30,9 @@ pae_list= [i for i in data['pae']]
 # list
 #for i in data['pae']:
  #   pae_list.append(i)
-  
 # Closing file
 f.close()
 #print(pae_list)
-
-class Residue_score:
-  
-  #data members of class
-  residue = Residue
-  score =0
-
-  def __init__(self,residue,score): 
-          self.residue = Residue
-          self.score = score
-
 
 print(type(pae_list))
 print(len(pae_list))

@@ -116,25 +116,23 @@ def calc_pdockq(chain_coords, chain_plddt, t):
 
 #################MAIN####################
 
-pdb_directory="pdbs/"
-path="NEGATIVE_05_462ca_unrelaxed_rank_1_model_3.pdb"
-path="6WX1_4897e_unrelaxed_rank_1_model_1.pdb"
+
 #Parse args
 #args = parser.parse_args()
 #Read chains
 #chain_coords, chain_plddt = read_pdb(args.pdbfile[0])
-chain_coords, chain_plddt = read_pdb(path)
+#chain_coords, chain_plddt = read_pdb(path)
 #Check chains
 #if len(chain_coords.keys())<2:
 #    print('Only one chain in pdbfile', args.pdbfile[0])
  #   sys.exit()
 
 #Calculate pdockq
-t=8 #Distance threshold, set to 8 Å
-pdockq, ppv = calc_pdockq(chain_coords, chain_plddt, t)
+#t=8 #Distance threshold, set to 8 Å
+#pdockq, ppv = calc_pdockq(chain_coords, chain_plddt, t)
 #print('pDockQ =',np.round(pdockq,3),'for',args.pdbfile[0])
-print('pDockQ =',np.round(pdockq,3),'for',path)
-print('This corresponds to a PPV of at least', ppv)
+#print('pDockQ =',np.round(pdockq,3),'for',path)
+#print('This corresponds to a PPV of at least', ppv)
 
 
 
