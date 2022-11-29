@@ -4,6 +4,8 @@ import os
 import numpy as np
 import csv
 path_positive_colab="pdbs/positive/colabaf/"
+path_positive_omega="pdbs/positive/omegafold/"
+path_positive_alphafold="pdbs/positive/alphafold/"
 path_negative="pdbs/negative/"
 path_results="results/"
 csv_heaver=['code', 'group','method', 'pDockQ', 'ppv','probable interaction?']
@@ -39,6 +41,8 @@ def pdockq_path(path):
 
 pdockq_path(path_negative)
 pdockq_path(path_positive_colab)
+pdockq_path(path_positive_omega)
+pdockq_path(path_positive_alphafold)
 with open('pdockq_results.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(csv_heaver)
