@@ -3,10 +3,11 @@ import pdock
 import os
 import numpy as np
 import csv
-path_positive_colab="pdbs/positive/colabaf/"
+path_positive_colab="pdbs/positive/colabfold/"
 path_positive_omega="pdbs/positive/omegafold/"
 path_positive_alphafold="pdbs/positive/alphafold/"
-path_negative="pdbs/negative/"
+path_negative_colab="pdbs/negative/colabfold/"
+path_negative_omega="pdbs/negative/omegafold/"
 path_results="results/"
 csv_heaver=['code', 'group','method', 'pDockQ', 'ppv','probable interaction?']
 csv_data=[]
@@ -20,10 +21,11 @@ def pdockq_path(path):
             name=file.name.split(".")[0]
             if name.split("_")[0].lower()=="negative":
                 protein_name=name.split("_")[0]+name.split("_")[1]
-                method="colabaf"
+                #method="colabaf"
             else:
                 protein_name=name.split("_")[0]
                 method=path.split("/")[2]
+            method=path.split("/")[2]
             protein_name=protein_name.upper()
             path_file=path+name+".pdb"
             chain_coords, chain_plddt = pdock.read_pdb(path_file)
@@ -39,11 +41,12 @@ def pdockq_path(path):
             print('pDockQ =',np.round(pdockq,3),'for',path_file)
             print('This corresponds to a PPV of at least', ppv)
 
-pdockq_path(path_negative)
-pdockq_path(path_positive_colab)
+#pdockq_path(path_negative_colab)
+#pdockq_path(path_positive_colab)
+pdockq_path(path_negative_omega)
 pdockq_path(path_positive_omega)
-pdockq_path(path_positive_alphafold)
-with open('pdockq_results.csv', 'w', newline='') as file:
+
+with open('pdockq_results_omega.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(csv_heaver)
     writer.writerows(csv_data)
