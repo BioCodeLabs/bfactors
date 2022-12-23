@@ -3,6 +3,8 @@ import pdock
 import os
 import numpy as np
 import csv
+path_positive_extras="pdbs/positive/extras/"
+path_positive_old="pdbs/positive/old/"
 path_positive_colab="pdbs/positive/colabfold/"
 path_positive_omega="pdbs/positive/omegafold/"
 path_positive_alphafold="pdbs/positive/alphafold/"
@@ -43,10 +45,10 @@ def pdockq_path(path):
 
 #pdockq_path(path_negative_colab)
 #pdockq_path(path_positive_colab)
-pdockq_path(path_negative_omega)
-pdockq_path(path_positive_omega)
+pdockq_path(path_positive_extras)
+#pdockq_path(path_positive_omega)
 
-with open('pdockq_results_omega.csv', 'w', newline='') as file:
+with open('pdockq_results_extras.csv', 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(csv_heaver)
     writer.writerows(csv_data)

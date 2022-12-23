@@ -1,8 +1,18 @@
+import csv
+import os
 import Bio.PDB
 import statistics
 import json
 from numpy import mean
 import  Bio.PDB.Residue as Residue
+path_positive_colab="pdbs/positive/colabfold/"
+path_positive_omega="pdbs/positive/omegafold/"
+path_positive_alphafold="pdbs/positive/alphafold/"
+path_negative_colab="pdbs/negative/colabfold/"
+path_negative_omega="pdbs/negative/omegafold/"
+path_results="results/"
+csv_heaver=['code', 'group','method','N interface residues ','pLDDT', 'IpLDDT']
+csv_data=[]
 path = '6ZE1_1b825_unrelaxed_rank_1_model_3.pdb' # your file path here
 #path= "NEGATIVE_09_fcd4d_unrelaxed_rank_1_model_3.pdb" #negative
 #path= "NEGATIVE_05_462ca_unrelaxed_rank_1_model_3.pdb"
@@ -94,14 +104,13 @@ print(avg)
 resid1=Residue_score(chain[0],2) 
 print(resid1)
 
-"""
+
 index_chain=0
 new_bfactors=[]
 residue_score=[]
 for score in  bfactors:
     if score not in residue_score:
         residue_score
-
 
 for residue1 in chain:
     for residue2 in chain2:
@@ -122,40 +131,99 @@ for residue1 in chain:
 
                 for atom in residue1.get_atoms():
                     new_bfactors.append(atom.get_bfactor()*-100)
-
-                
                 print(residue1, residue2, distance)
         # stop after first residue
         #break
 
-#print(new_bfactors)
-#print(bfactors)
-#print(len(bfactors))
-#print(len(new_bfactors))
-#print(len(index_chain1))
-#print(index_chain1)
-
-
-print("average plDDT before: ",mean(bfactors))
-
 bfactors2= [a.get_bfactor() for a in structure.get_atoms()]
-bfactor_test=[]
-#print(bfactors2)
-for factor in bfactors2:
-    if factor<0:
-        factor=factor*-0.75
-    else:
-        factor=factor*0.25
-    bfactor_test.append(factor)
+"""
 
-print(bfactor_test)
-print("average XplDDT after: ",mean(bfactor_test))
+def get_plddt_interface(path):
+    for file in os.scandir(path):
+        if file.is_file():
+            name=file.name.split(".")[0]
+            if name.split("_")[0].lower()=="negative":
+                protein_name=name.split("_")[0]+name.split("_")[1]
+                #method="colabaf"
+            else:
+                protein_name=name.split("_")[0]
+                method=path.split("/")[2]
+            method=path.split("/")[2]
+            protein_name=protein_name.upper()
+            path_file=path+name+".pdb"
+            
+        residues=[]
+        parser = PDBParser()
+        structure = parser.get_structure('id',path_file)
+        print(path_file)
+        chains = structure[0]
 
-print("Interaction?")
-if (mean(bfactor_test)>24):
-    print("Probably Yes")
-else:
-    print("Probably No")
+        if (len(chains)>2):
+            return
+        chains_model=[]
+        for chain in chains:
+            chains_model.append(chain)
 
+        chain = chains_model[0]
+        chain2 =  chains_model[1]
+        index_chain1=[]
+        index_chain2=[]
+        interface_residue1=[]
+        interface_residue2=[]
+        scores=[]
+        interface_scores=[]
+        for residue1 in chain:
+                for residue2 in chain2:
+                    if residue1 != residue2:
+                        try:
+                            distance = residue1['CA'] - residue2['CA']
+                        except KeyError:
+                            continue
+                        if distance < 8:
+                            if residue1.get_id()[1] not in index_chain1:
+                                index_chain1.append(residue1.get_id()[1])
+                                interface_residue1.append(residue1)
+                            if residue2.get_id()[1] not in index_chain2:
+                                index_chain2.append(residue2.get_id()[1])
+                                interface_residue2.append(residue2)
+                            
+                            #print(residue1, residue2, distance)
+        
+        for residue in chain:
+            for atom in residue.get_atoms():
+                        scores.append(atom.get_bfactor())
+        for residue in chain2:
+            for atom in residue.get_atoms():
+                        scores.append(atom.get_bfactor())
 
+        if len(scores)<=0:
+            pldtt=0
+        else:
+            pldtt=mean(scores)
+        for residue in interface_residue1:
+            for atom in residue.get_atoms():
+                        interface_scores.append(atom.get_bfactor())
+        
 
+        for residue in interface_residue2:
+            for atom in residue.get_atoms():
+                        interface_scores.append(atom.get_bfactor())        
+        if len(interface_scores)<=0:
+            iplddt=0
+        else:
+            iplddt=mean(interface_scores)
+        print("length",len(interface_residue1))
+        n_residues= len(interface_residue1)+len(interface_residue2)
+        
+
+        csv_data.append([protein_name,path.split("/")[1],method,n_residues,pldtt,iplddt])
+    
+    return interface_residue2    
+
+#print(get_plddt_interface(path_negative_colab))
+print(get_plddt_interface(path_positive_colab))
+
+with open('plddt_results_positive_colab.csv', 'w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(csv_heaver)
+    writer.writerows(csv_data)
